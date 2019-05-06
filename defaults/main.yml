@@ -1,2 +1,7 @@
 ---
-# defaults file for ansible-theo-agent
+theo_agent_version: "0.9.1"
+theo_agent_path: /usr/sbin/theo-agent
+theo_agent_user: theo-agent
+theo_agent_config_dir: /etc/theo-agent
+theo_agent_config_path: "{{ theo_agent_config_dir }}/config.yml"
+theo_agent_cache_dir: /var/cache/theo-agent

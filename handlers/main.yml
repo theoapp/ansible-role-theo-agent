@@ -1,2 +1,5 @@
 ---
-# handlers file for ansible-theo-agent
+- name: Restart sshd
+  service:
+    name: "{{ sshd_service_name }}"
+    state: restarted

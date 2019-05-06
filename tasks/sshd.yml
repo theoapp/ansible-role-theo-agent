@@ -1,0 +1,18 @@
+---
+- name: Update sshd configuration
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+    validate: "/usr/sbin/sshd -T -f %s"
+  with_items:
+    - regexp: "^PasswordAuthentication"
+      line: "PasswordAuthentication no"
+    - regexp: "^AuthorizedKeysFile"
+      line: "AuthorizedKeysFile {{ theo_agent_cache_dir }}/%u"
+    - regexp: "^AuthorizedKeysCommandUser"
+      line: "AuthorizedKeysCommandUser {{ theo_agent_user }}"
+    - regexp: "^AuthorizedKeysCommand "
+      line: "AuthorizedKeysCommand {{ theo_agent_path }} -config-file {{ theo_agent_config_path }} -cache-path {{ theo_agent_cache_dir }} %u"
+  notify: Restart sshd

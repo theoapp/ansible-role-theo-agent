@@ -1,0 +1,44 @@
+---
+- name: Check current theo-agent version
+  command: theo-agent --version | grep '^Version:' | awk '{ print $2 }'
+  register: theo_agent_current_version
+  changed_when: false
+  failed_when: false
+
+- name: Delete existing theo-agent version if different
+  file:
+    path: "{{ theo_agent_path }}"
+    state: absent
+  when: >
+    theo_agent_current_version.stdout is defined
+    and theo_agent_version not in theo_agent_current_version.stdout
+
+- name: Install theo-agent executable
+  get_url:
+    url: https://github.com/theoapp/theo-agent/releases/download/v{{ theo_agent_version }}/theo-agent-Linux-x86_64
+    dest: "{{ theo_agent_path }}"
+    mode: 0755
+
+- name: Add theo-agent user
+  user:
+    name: "{{ theo_agent_user }}"
+    comment: "Theo Agent"
+    shell: /bin/false
+    system: yes
+
+- name: Create cache directory
+  file:
+    path: "{{ theo_agent_cache_dir }}"
+    state: directory
+    mode: 0755
+
+- name: Create config directory
+  file:
+    path: "{{ theo_agent_config_dir }}"
+    state: directory
+    mode: 0755
+
+- name: Create config file
+  template:
+    src: config.yml.j2
+    dest: "{{ theo_agent_config_path }}"
