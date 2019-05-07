@@ -10,5 +10,10 @@
         name:
           - openssh-server
         state: present
+    # don't know why this is needed...
+    - name: Ensure sshd service is started
+      service:
+        name: sshd
+        state: started
   roles:
     - role: ansible-theo-agent
