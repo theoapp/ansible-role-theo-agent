@@ -1,0 +1,21 @@
+---
+language: python
+services: docker
+
+env:
+  global:
+    - ROLE_NAME: theo-agent
+  matrix:
+    - MOLECULE_DISTRO: centos7
+    - MOLECULE_DISTRO: ubuntu1804
+
+install:
+  - pip install molecule[docker]
+
+before_script:
+  - cd ..
+  - mv ansible-role-$ROLE_NAME ansible-$ROLE_NAME
+  - cd ansible-$ROLE_NAME
+
+script:
+  - molecule --debug test
