@@ -1,5 +1,14 @@
 ---
 - name: Converge
   hosts: all
+  vars:
+    - theo_url: https://theo.example.com
+    - theo_client_token: zdOPNza4jjtceH5F2rU0iOkIJ2xlV4hGUauKT4cNe8HAp+AMnzYEzSc0EIBGM+MJuqL7gLd6bwIP
+  pre_tasks:
+    - name: Ensure sshd is installed
+      package:
+        name:
+          - openssh-server
+        state: present
   roles:
     - role: ansible-theo-agent
