@@ -45,4 +45,4 @@ BSD
 Author Information
 ------------------
 
-This role was create in 2019 by [Gizero](https://github.com/gizero)
+This role was created in 2019 by [Gizero](https://github.com/gizero)
