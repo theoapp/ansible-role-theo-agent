@@ -30,6 +30,7 @@
   file:
     path: "{{ theo_agent_cache_dir }}"
     state: directory
+    owner: "{{ theo_agent_user }}"
     mode: 0755
 
 - name: Create config directory
