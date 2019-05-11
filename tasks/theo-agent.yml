@@ -15,7 +15,7 @@
 
 - name: Install theo-agent executable
   get_url:
-    url: https://github.com/theoapp/theo-agent/releases/download/v{{ theo_agent_version }}/theo-agent-Linux-x86_64
+    url: https://github.com/theoapp/theo-agent/releases/download/v{{ theo_agent_version }}/theo-agent-{{ ansible_system }}-{{ ansible_architecture }}
     dest: "{{ theo_agent_path }}"
     mode: 0755
 
