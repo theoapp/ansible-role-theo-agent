@@ -1,2 +1,2 @@
 ---
-sshd_service_name: sshd
+sshd_service_name: ssh
