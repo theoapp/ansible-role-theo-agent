@@ -44,9 +44,18 @@ galaxy_info:
   #   - 7
   #   - 99.99
   platforms:
+    - name: Debian
+      versions:
+        - stretch
+        - jessie
     - name: Ubuntu
       versions:
         - bionic
+        - xenial
+    - name: EL
+      versions:
+        - 7
+        - 6
 
   # List tags for your role here, one per line. A tag is a keyword that describes
   # and categorizes the role. Users find roles by searching for tags. Be sure to
