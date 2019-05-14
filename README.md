@@ -35,7 +35,7 @@ Example Playbook
         - theo_url: https://theo.example.com
         - theo_client_token: zdOPNza4jjtceH5F2rU0iOkIJ2xlV4hGUauKT4cNe8HAp+AMnzYEzSc0EIBGM+MJuqL7gLd6bwIP
       roles:
-         - { role: theoapp/ansible-theo-agent }
+         - theoapp.theo_agent
 
 License
 -------
