@@ -8,3 +8,4 @@ theo_agent_cache_dir: /var/cache/theo-agent
 theo_agent_verify_signature: false
 theo_agent_public_key: ""
 theo_agent_public_key_path: "{{ theo_agent_config_dir }}/public.pem"
+theo_agent_sshd_authorized_keys_command: "{{ theo_agent_path }}"

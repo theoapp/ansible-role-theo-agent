@@ -1,4 +1,26 @@
 ---
+- name: Validate settings
+  assert:
+    that: |
+      (theo_agent_config_path == "/etc/theo-agent/config.yml" and sshd_current_version is version('6.4', '<')) or
+      sshd_current_version is version('6.4', '>=')
+    msg: With OpenSSH < 6.4 theo_agent_config_path must be /etc/theo-agent/config.yml
+
+- name: Set AuthorizedKeysCommand config snippet 1
+  set_fact:
+    theo_agent_sshd_authorized_keys_command: "{{ theo_agent_sshd_authorized_keys_command }} -config-file {{ theo_agent_config_path }}"
+  when: theo_agent_config_path != "/etc/theo-agent/config.yml" and sshd_current_version is version('6.4', '>')
+
+- name: Set AuthorizedKeysCommand config snippet 2
+  set_fact:
+    theo_agent_sshd_authorized_keys_command: "{{ theo_agent_sshd_authorized_keys_command }} -fingerprint %f"
+  when: sshd_current_version is version('6.9', '>=')
+
+- name: Set AuthorizedKeysCommand config snippet 3
+  set_fact:
+    theo_agent_sshd_authorized_keys_command: "{{ theo_agent_sshd_authorized_keys_command }} %u"
+  when: theo_agent_sshd_authorized_keys_command != theo_agent_path
+
 - name: Set AuthorizedKeysCommandUser config snippet
   set_fact:
     sshd_authorized_keys_command_user_options:
@@ -13,17 +35,7 @@
         line: "AuthorizedKeysCommandRunAs {{ theo_agent_user }}"
   when: ( ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 6 )
 
-- name: Update sshd AuthorizedKeysCommand{User,RunAs} configuration options
-  lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: "{{ item.regexp }}"
-    line: "{{ item.line }}"
-    state: present
-    validate: "/usr/sbin/sshd -T -f %s"
-  with_items: "{{ sshd_authorized_keys_command_user_options }}"
-  notify: Restart sshd
-
-- name: Update remaining sshd configuration options
+- name: Update sshd configuration options
   lineinfile:
     path: /etc/ssh/sshd_config
     regexp: "{{ item.regexp }}"
@@ -33,8 +45,9 @@
   with_items:
     - regexp: "^PasswordAuthentication"
       line: "PasswordAuthentication no"
+    - "{{ sshd_authorized_keys_command_user_options }}"
+    - regexp: "^AuthorizedKeysCommand "
+      line: "AuthorizedKeysCommand {{ theo_agent_sshd_authorized_keys_command }}"
     - regexp: "^AuthorizedKeysFile"
       line: "AuthorizedKeysFile {{ theo_agent_cache_dir }}/%u"
-    - regexp: "^AuthorizedKeysCommand "
-      line: "AuthorizedKeysCommand {{ theo_agent_path }} -config-file {{ theo_agent_config_path }} -cache-path {{ theo_agent_cache_dir }} %u"
   notify: Restart sshd
