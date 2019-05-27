@@ -1,0 +1,27 @@
+---
+- name: Get OpenSSH version
+  shell: |
+    set -o pipefail
+    sshd -v 2>&1 | grep '^OpenSSH' | awk '{ print $1 }' | sed 's/OpenSSH_//; s/p/./; s/,//; s/ //g'
+  args:
+    executable: /bin/bash
+  register: sshd_current_version_cmd
+  changed_when: false
+  failed_when: false
+
+- name: Set sshd_current_version
+  set_fact:
+    sshd_current_version: "{{ sshd_current_version_cmd.stdout }}"
+
+- debug:
+    msg: OpenSSH version is {{ sshd_current_version }}
+
+- name: Check OpenSSH version
+  assert:
+    that: |
+      (sshd_current_version is version('6.2', '>=') or
+        ( ( ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' )
+          and ansible_distribution_version is version('6', '>=')
+        )
+      )
+    msg: OpenSSH version {{ sshd_current_version }} does not support AuthorizedKeysCommand
