@@ -17,10 +17,17 @@
           - openssh-server
         state: present
 
-    # don't know why this is needed...
+    - name: Ensure sshd service is started
+      service:
+        name: ssh
+        state: started
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '14.04'
+
     - name: Ensure sshd service is started
       service:
         name: sshd
         state: started
+      when: not (ansible_distribution == 'Ubuntu' and ansible_distribution_version == '14.04')
+
   roles:
     - role: ansible-theo-agent
