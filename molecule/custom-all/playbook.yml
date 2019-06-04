@@ -8,7 +8,8 @@
     - theo_agent_user: theo
     - theo_agent_cache_dir: /var/cache/theo
     - theo_agent_config_dir: /var/lib/theo
-    - theo_agent_config_path: /var/lib/theo/theo.yml
+    - theo_agent_config_file: theo.yml
+    - theo_agent_public_key_file: theo-server.pem
     - theo_agent_verify_signature: true
     - theo_agent_public_key: |
         -----BEGIN PUBLIC KEY-----

@@ -37,7 +37,7 @@ def test_theo_config_file(host):
         zdOPNza4jjtceH5F2rU0iOkIJ2xlV4hGUauKT4cNe8HAp+AMnzYEzSc0EIBGM+MJuqL7gLd6bwIP
     cachedir: /var/cache/theo
     verify: True
-    public_key: /var/lib/theo/public.pem
+    public_key: /var/lib/theo/theo-server.pem
     '''
     expected = [
         b'url: https://theo.example.com',
@@ -45,14 +45,14 @@ def test_theo_config_file(host):
         b'+AMnzYEzSc0EIBGM+MJuqL7gLd6bwIP',
         b'cachedir: /var/cache/theo',
         b'verify: True',
-        b'public_key: /var/lib/theo/public.pem'
+        b'public_key: /var/lib/theo/theo-server.pem'
     ]
     for line in expected:
         assert line in conf
 
 
 def test_theo_public_key_file(host):
-    f = host.file('/var/lib/theo/public.pem')
+    f = host.file('/var/lib/theo/theo-server.pem')
     assert f.exists
     assert f.is_file
     assert f.user == 'root'

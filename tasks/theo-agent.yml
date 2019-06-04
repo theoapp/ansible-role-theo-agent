@@ -1,4 +1,13 @@
 ---
+- name: Set sshd_authorized_keys_command
+  set_fact: theo_agent_sshd_authorized_keys_command="{{ theo_agent_path }}"
+
+- name: Set theo_agent_config_path
+  set_fact: theo_agent_config_path="{{ theo_agent_config_dir }}/{{ theo_agent_config_file }}"
+
+- name: Set sshd_authorized_keys_command
+  set_fact: theo_agent_sshd_authorized_keys_command="{{ theo_agent_path }}"
+
 - name: Check variables consistency
   assert:
     that: |
@@ -19,7 +28,7 @@
 
 - name: Set public key path for config
   set_fact:
-    theo_agent_config_public_key_path: "public_key: {{ theo_agent_public_key_path }}"
+    theo_agent_config_public_key_path: "public_key: {{ theo_agent_config_dir }}/{{ theo_agent_public_key_file }}"
   when: theo_agent_verify_signature|bool
 
 - name: Set public key path for config
@@ -68,7 +77,7 @@
 
 - name: Create public key file
   copy:
-    dest: "{{ theo_agent_public_key_path }}"
+    dest: "{{ theo_agent_config_dir }}/{{ theo_agent_public_key_file }}"
     mode: 0644
     content: "{{ theo_agent_public_key }}"
   when: theo_agent_verify_signature|bool
