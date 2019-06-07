@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-SCENARIOS="default signature custom-bin-file custom-config-file custom-config-dir"
+SCENARIOS="default signature custom-bin-file custom-config-file custom-config-dir custom-all"
 
-MUST_FAIL="centos6:custom-config-file centos6:custom-config-dir"
+MUST_FAIL="centos6:custom-config-file centos6:custom-config-dir centos6:custom-all"
 
 function has_right_to_fail {
     for i in ${MUST_FAIL}; do
