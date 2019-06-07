@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-SCENARIOS="default signature"
+SCENARIOS="default signature custom-bin-file"
 
 MUST_FAIL=""
 

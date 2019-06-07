@@ -1,0 +1,30 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    - theo_url: https://theo.example.com
+    - theo_client_token: zdOPNza4jjtceH5F2rU0iOkIJ2xlV4hGUauKT4cNe8HAp+AMnzYEzSc0EIBGM+MJuqL7gLd6bwIP
+    - theo_agent_path: /usr/local/bin/theo
+    - theo_agent_verify_signature: true
+    - theo_agent_public_key: |
+        -----BEGIN PUBLIC KEY-----
+        MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAwVhHEBTVqEpBOpguARtg
+        //WyDBEoCT2F2OjnHB6fxJ9oopYJZB2Y4jj5cxo1O41r65XmMRT4lqeHWS6Iovde
+        kzlJ0bH91gl7/iNziUMN4ONiIR0SU3PiBGQ0XKq6rUxpsOhe+tFPfBQYhkkAiQeG
+        WC1GYQynYjZ/MTEDIPnd5YjSl0agzm7BMRujEcjWyYqEBuZjtDqP6AICz8nkFo9i
+        CWBONYbCujDl+1sei3WUfeGcUdGiPNwQGU/TW4sfcRWQzayw3XQEl3ERNRMihVsb
+        in2529O4+JMKdKn22mzTmWsraP/ZakVeti0VtpGZEe1YSTW8+SCz7DnTadnuUZAO
+        5JFVTmFcbF7/d/H0atKVVAeTC5nqYNeDrW4jtIQalUZeaHrBkWK7i/yxDYFlC2AW
+        ZEu4IQZtGfNJCaZFuYSiN96yzlnMWRp1nUGaBxoax4K8rBwX8EWxT4EAyN1mtan0
+        ZQITjiZTqDvnhr8iSIvn9hy3942GYi3upOsBeqfb90vzS7BAmoplyWPS0D+UWweB
+        +sjv96Gtb4BFpc96qwptLCnVFFOVlq0bq0u1FN6sZ4RApl2IaSJV9JGsJjeeJowh
+        GCK9sSDVI5XY3wy6UYMo9SZQGIglyRPrnd3R82O277lAyOVC/NNp1vq5WH/Mi1Mu
+        JK85kX7Atut+tgWgwuwT5vcCAwEAAQ==
+        -----END PUBLIC KEY-----
+  pre_tasks:
+    - name: Import common tasks
+      import_tasks: ../resources/playbooks/pre-tasks.yml
+
+
+  roles:
+    - role: ansible-theo-agent
