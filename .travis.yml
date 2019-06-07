@@ -24,7 +24,7 @@ before_script:
   - cd ansible-$ROLE_NAME
 
 script:
-  - molecule --debug test --all
+  - ./runMolecule.sh
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
