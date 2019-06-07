@@ -21,29 +21,9 @@
         JK85kX7Atut+tgWgwuwT5vcCAwEAAQ==
         -----END PUBLIC KEY-----
   pre_tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
-        cache_valid_time: 600
-      when: ansible_os_family == 'Debian'
+    - name: Import common tasks
+      import_tasks: ../resources/playbooks/pre-tasks.yml
 
-    - name: Ensure sshd is installed
-      package:
-        name:
-          - openssh-server
-        state: present
-
-    - name: Ensure sshd service is started
-      service:
-        name: ssh
-        state: started
-      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '14.04'
-
-    - name: Ensure sshd service is started
-      service:
-        name: sshd
-        state: started
-      when: not (ansible_distribution == 'Ubuntu' and ansible_distribution_version == '14.04')
 
   roles:
     - role: ansible-theo-agent

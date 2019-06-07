@@ -37,6 +37,13 @@ def test_theo_config_file(host):
         assert line in conf
 
 
+def test_theo_cache_dir(host):
+    f = host.file('/var/cache/theo-agent')
+    assert f.exists
+    assert f.user == 'theo-agent'
+    assert f.group == 'root'
+
+
 def test_sshd_config(host):
     distro = os.getenv('MOLECULE_DISTRO', 'centos7')
     if distro == 'centos6':
@@ -63,7 +70,7 @@ def test_sshd_config(host):
         if line not in configlines:
             errors.append(line)
 
-    if(len(errors)):
+    if len(errors):
         print('Failed test_sshd_config, missing line(s)')
         for error in errors:
             print(error)
