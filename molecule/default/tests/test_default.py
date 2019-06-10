@@ -38,7 +38,7 @@ def test_theo_config_file(host):
 
 
 def test_sshd_config(host):
-    distro = os.environ['MOLECULE_DISTRO']
+    distro = os.getenv('MOLECULE_DISTRO', 'centos7')
     if distro == 'centos6':
         expected = get_sshd_config_centos6()
     elif distro == 'debian8':
