@@ -26,6 +26,13 @@
     - name: Import common tasks
       import_tasks: ../resources/playbooks/pre-tasks.yml
 
-
-  roles:
-    - role: ansible-theo-agent
+  tasks:
+      - block:
+          - import_role:
+              name: ansible-theo-agent
+        rescue:
+          - debug:
+              msg: "To the rescue"
+        always:
+          - debug:
+              msg: "Cleanup!"
