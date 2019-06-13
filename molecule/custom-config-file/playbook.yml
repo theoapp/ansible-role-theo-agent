@@ -27,12 +27,12 @@
       import_tasks: ../resources/playbooks/pre-tasks.yml
 
   tasks:
-      - block:
-          - import_role:
-              name: ansible-theo-agent
-        rescue:
-          - debug:
-              msg: "To the rescue"
-        always:
-          - debug:
-              msg: "Cleanup!"
+    - block:
+        - import_role:
+            name: ansible-theo-agent
+      rescue:
+        - debug:
+            msg: "To the rescue"
+      always:
+        - debug:
+            msg: "Cleanup!"
