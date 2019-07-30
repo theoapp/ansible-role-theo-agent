@@ -1,5 +1,7 @@
-url: {{ theo_url }}
-token: {{ theo_client_token }}
+---
+# {{ ansible_managed }}
+url: "{{ theo_url }}"
+token: "{{ theo_client_token }}"
 cachedir: {{ theo_agent_cache_dir }}
 verify: {{ theo_agent_verify_signature|capitalize }}
 {{ theo_agent_config_public_key_path }}

@@ -1,3 +1,4 @@
+"""Testinfra test for molecule"""
 import os
 
 import testinfra.utils.ansible_runner
@@ -20,16 +21,16 @@ def test_theo_config_file(host):
     assert f.group == 'root'
     conf = f.content
     '''
-    url: https://theo.example.com
+    url: "https://theo.example.com"
     token: \
-        zdOPNza4jjtceH5F2rU0iOkIJ2xlV4hGUauKT4cNe8HAp+AMnzYEzSc0EIBGM+MJuqL7gLd6bwIP
+        "zdOPNza4jjtceH5F2rU0iOkIJ2xlV4hGUauKT4cNe8HAp+AMnzYEzSc0EIBGM+MJuqL7gLd6bwIP"
     cachedir: /var/cache/theo-agent
     verify: False
     '''
     expected = [
-        b'url: https://theo.example.com',
-        b'token: zdOPNza4jjtceH5F2rU0iOkIJ2xlV4hGUauKT4cNe8HAp'
-        b'+AMnzYEzSc0EIBGM+MJuqL7gLd6bwIP',
+        b'url: "https://theo.example.com"',
+        b'token: "zdOPNza4jjtceH5F2rU0iOkIJ2xlV4hGUauKT4cNe8HAp'
+        b'+AMnzYEzSc0EIBGM+MJuqL7gLd6bwIP"',
         b'cachedir: /var/cache/theo-agent',
         b'verify: False'
     ]
