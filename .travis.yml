@@ -16,7 +16,7 @@ env:
     - MOLECULE_DISTRO: fedora27
 
 install:
-  - pip install testinfra molecule[docker]
+  - pip install testinfra==3.0.5 molecule[docker]==2.20.2
 
 before_script:
   - cd ..

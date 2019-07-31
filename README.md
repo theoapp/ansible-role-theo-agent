@@ -15,7 +15,8 @@ Role Variables
 --------------
 
 Required variables:
-```
+
+```yaml
 theo_url:
 theo_client_token:
 ```
@@ -30,12 +31,14 @@ None.
 Example Playbook
 ----------------
 
-    - hosts: servers
-      vars:
-        - theo_url: https://theo.example.com
-        - theo_client_token: zdOPNza4jjtceH5F2rU0iOkIJ2xlV4hGUauKT4cNe8HAp+AMnzYEzSc0EIBGM+MJuqL7gLd6bwIP
-      roles:
-         - theoapp.theo_agent
+```yaml
+- hosts: servers
+  vars:
+    - theo_url: "https://theo.example.com"
+    - theo_client_token: "zdOPNza4jjtceH5F2rU0iOkIJ2xlV4hGUauKT4cNe8HAp+AMnzYEzSc0EIBGM+MJuqL7gLd6bwIP"
+  roles:
+     - theoapp.theo_agent
+```
 
 License
 -------
