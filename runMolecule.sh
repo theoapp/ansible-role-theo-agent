@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
+# This script wraps molecule test to handle "controlled" failures
+# Add distro:scenario to MUST_FAIL var if the test is supposed to fail
 SCENARIOS="default signature custom-bin-file custom-config-file custom-config-dir custom-all"
 
+# List of tests that must fail, in the form distro:scenario
 MUST_FAIL="centos6:custom-config-file centos6:custom-config-dir centos6:custom-all"
 
 function has_right_to_fail {
