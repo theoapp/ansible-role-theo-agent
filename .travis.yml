@@ -18,7 +18,7 @@ env:
     - MOLECULE_DISTRO: fedora30
 
 install:
-  - pip install testinfra molecule[docker]
+  - pip install molecule[docker]
 
 before_script:
   - cd ..
