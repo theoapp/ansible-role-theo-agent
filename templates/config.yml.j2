@@ -3,3 +3,5 @@ token: {{ theo_client_token }}
 cachedir: {{ theo_agent_cache_dir }}
 verify: {{ theo_agent_verify_signature|capitalize }}
 {{ theo_agent_config_public_key_path }}
+{% if theo_agent_hostname_prefix | length > 0 %}hostname-prefix: {{ theo_agent_hostname_prefix }}{% endif %}
+{% if theo_agent_hostname_suffix | length > 0 %}hostname-suffix: {{ theo_agent_hostname_suffix }}{% endif %}
