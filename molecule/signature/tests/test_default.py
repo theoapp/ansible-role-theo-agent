@@ -26,6 +26,7 @@ def test_theo_config_file(host):
     cachedir: /var/cache/theo-agent
     verify: True
     public_key: /etc/theo-agent/public.pem
+    hostname-prefix: test-
     '''
     expected = [
         b'url: https://theo.example.com',
@@ -33,7 +34,8 @@ def test_theo_config_file(host):
         b'+AMnzYEzSc0EIBGM+MJuqL7gLd6bwIP',
         b'cachedir: /var/cache/theo-agent',
         b'verify: True',
-        b'public_key: /etc/theo-agent/public.pem'
+        b'public_key: /etc/theo-agent/public.pem',
+        b'hostname-prefix: test-'
     ]
     for line in expected:
         assert line in conf
