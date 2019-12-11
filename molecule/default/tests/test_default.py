@@ -43,8 +43,6 @@ def test_sshd_config(host):
         expected = get_sshd_config_centos6()
     elif distro == 'debian8':
         expected = get_sshd_config_pre_v69()
-    elif distro == 'ubuntu1404':
-        expected = get_sshd_config_pre_v69()
     else:
         expected = get_sshd_config_v69()
     f = host.file('/etc/ssh/sshd_config')
