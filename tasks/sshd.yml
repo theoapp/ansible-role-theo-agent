@@ -51,3 +51,9 @@
     - regexp: "^AuthorizedKeysFile"
       line: "AuthorizedKeysFile {{ theo_agent_cache_dir }}/%u"
   notify: Restart sshd
+
+- name: Add sshd to the list of permissive domain on selinux
+  selinux_permissive:
+    name: sshd_t
+    permissive: true
+  when: ansible_selinux|bool
