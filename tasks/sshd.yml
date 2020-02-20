@@ -56,4 +56,4 @@
   selinux_permissive:
     name: sshd_t
     permissive: true
-  when: ansible_selinux|bool
+  when: ansible_selinux is defined and ansible_selinux and ansible_selinux.status == 'enabled'
