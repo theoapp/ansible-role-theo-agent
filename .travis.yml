@@ -19,7 +19,7 @@ env:
     - MOLECULE_DISTRO=fedora31
 
 install:
-  - pip install molecule[docker]
+  - pip install molecule[docker]==2.22
 
 before_script:
   - cd ..
