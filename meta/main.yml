@@ -53,6 +53,7 @@ galaxy_info:
     - name: Ubuntu
       versions:
         - bionic
+        - focal
         - trusty
         - xenial
     - name: EL
