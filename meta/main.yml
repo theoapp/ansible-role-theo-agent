@@ -63,7 +63,6 @@ galaxy_info:
         - 6
     - name: fedora
       versions:
-        - 30
         - 31
         - 32
 
