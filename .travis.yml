@@ -9,7 +9,6 @@ env:
     - MOLECULE_DISTRO=centos6
     - MOLECULE_DISTRO=centos7
     - MOLECULE_DISTRO=centos8
-    - MOLECULE_DISTRO=debian8
     - MOLECULE_DISTRO=debian9
     - MOLECULE_DISTRO=debian10
     - MOLECULE_DISTRO=ubuntu1404 REGISTRY_USER=theoapp
