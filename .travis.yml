@@ -17,6 +17,7 @@ env:
     - MOLECULE_DISTRO=ubuntu1804
     - MOLECULE_DISTRO=ubuntu2004
     - MOLECULE_DISTRO=fedora31
+    - MOLECULE_DISTRO=fedora32
 
 install:
   - pip install molecule[docker]==2.22
