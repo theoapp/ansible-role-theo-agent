@@ -6,6 +6,10 @@
       sshd_current_version is version('6.4', '>=')
     msg: With OpenSSH < 6.4 theo_agent_config_path must be /etc/theo-agent/config.yml
 
+- name: Set AuthorizedKeysCommand
+  set_fact:
+    theo_agent_sshd_authorized_keys_command: "{{ theo_agent_path }}"
+
 - name: Set AuthorizedKeysCommand config snippet 1
   set_fact:
     theo_agent_sshd_authorized_keys_command: "{{ theo_agent_sshd_authorized_keys_command }} -config-file {{ theo_agent_config_path }}"
