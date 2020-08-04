@@ -1,0 +1,33 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    - theo_url: https://theo.example.com
+    - theo_client_token: zdOPNza4jjtceH5F2rU0iOkIJ2xlV4hGUauKT4cNe8HAp+AMnzYEzSc0EIBGM+MJuqL7gLd6bwIP
+  pre_tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 600
+      when: ansible_os_family == 'Debian'
+
+    - name: Ensure sshd is installed
+      package:
+        name:
+          - openssh-server
+        state: present
+
+    - name: Ensure sshd service is started
+      service:
+        name: ssh
+        state: started
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '14.04'
+
+    - name: Ensure sshd service is started
+      service:
+        name: sshd
+        state: started
+      when: not (ansible_distribution == 'Ubuntu' and ansible_distribution_version == '14.04')
+
+  roles:
+    - role: ansible-theo-agent
