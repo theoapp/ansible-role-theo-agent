@@ -11,3 +11,4 @@ theo_agent_public_key_path: "{{ theo_agent_config_dir }}/public.pem"
 theo_agent_sshd_authorized_keys_command: "{{ theo_agent_path }}"
 theo_agent_hostname_prefix: ""
 theo_agent_hostname_suffix: ""
+theo_agent_with_password_authentication: false

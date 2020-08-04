@@ -35,6 +35,20 @@
         line: "AuthorizedKeysCommandRunAs {{ theo_agent_user }}"
   when: ( ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 6 )
 
+- name: Set PasswordAuthentication on config snippet
+  set_fact:
+    sshd_password_authentication_options:
+      - regexp: "^PasswordAuthentication"
+        line: "PasswordAuthentication yes"
+  when: theo_agent_with_password_authentication|bool
+
+- name: Set PasswordAuthentication off config snippet
+  set_fact:
+    sshd_password_authentication_options:
+      - regexp: "^PasswordAuthentication"
+        line: "PasswordAuthentication no"
+  when: not theo_agent_with_password_authentication|bool
+
 - name: Update sshd configuration options
   lineinfile:
     path: /etc/ssh/sshd_config
@@ -43,8 +57,7 @@
     state: present
     validate: "/usr/sbin/sshd -T -f %s"
   with_items:
-    - regexp: "^PasswordAuthentication"
-      line: "PasswordAuthentication no"
+    - "{{ sshd_password_authentication_options }}"
     - "{{ sshd_authorized_keys_command_user_options }}"
     - regexp: "^AuthorizedKeysCommand "
       line: "AuthorizedKeysCommand {{ theo_agent_sshd_authorized_keys_command }}"
