@@ -41,7 +41,7 @@ def test_sshd_config(host):
 
 def get_sshd_config_centos6():
     return [
-        b'PasswordAuthentication no',
+        b'PasswordAuthentication yes',
         b'AuthorizedKeysCommandRunAs theo-agent',
         b'AuthorizedKeysCommand /usr/sbin/theo-agent',
         b'AuthorizedKeysFile /var/cache/theo-agent/%u'
@@ -50,7 +50,7 @@ def get_sshd_config_centos6():
 
 def get_sshd_config_pre_v69():
     return [
-        b'PasswordAuthentication no',
+        b'PasswordAuthentication yes',
         b'AuthorizedKeysCommandUser theo-agent',
         b'AuthorizedKeysCommand /usr/sbin/theo-agent',
         b'AuthorizedKeysFile /var/cache/theo-agent/%u'
@@ -59,7 +59,7 @@ def get_sshd_config_pre_v69():
 
 def get_sshd_config_v69():
     return [
-        b'PasswordAuthentication no',
+        b'PasswordAuthentication yes',
         b'AuthorizedKeysCommandUser theo-agent',
         b'AuthorizedKeysCommand /usr/sbin/theo-agent -fingerprint %f %u',
         b'AuthorizedKeysFile /var/cache/theo-agent/%u'
