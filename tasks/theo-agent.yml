@@ -65,6 +65,7 @@
   template:
     src: config.yml.j2
     dest: "{{ theo_agent_config_path }}"
+    mode: 0644
 
 - name: Create public key file
   copy:
