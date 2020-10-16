@@ -20,7 +20,7 @@ env:
     - MOLECULE_DISTRO=fedora32
 
 install:
-  - pip install ansible molecule[docker] testinfra
+  - pip install ansible ansible-lint molecule[docker] testinfra yamllint
 
 before_script:
   - cd ..
