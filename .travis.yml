@@ -20,7 +20,7 @@ env:
     - MOLECULE_DISTRO=fedora32
 
 install:
-  - pip install molecule[docker]==2.22
+  - pip install ansible molecule[docker] testinfra
 
 before_script:
   - cd ..
