@@ -1,0 +1,66 @@
+---
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: "0 7 * * 0"
+
+defaults:
+  run:
+    working-directory: ansible-theo-agent
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: ansible-theo-agent
+      - name: Super-Linter
+        uses: github/super-linter@v3
+        env:
+          VALIDATE_ANSIBLE: true
+          ANSIBLE_DIRECTORY: /
+          VALIDATE_YAML: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  molecule:
+    name: Molecule
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        distro:
+          - centos7
+          - centos8
+          - debian9
+          - debian10
+          - ubuntu1604
+          - ubuntu1804
+          - ubuntu2004
+          - fedora31
+          - fedora32
+        include:
+          - distro: ubuntu1404
+            registry: theoapp
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          path: ansible-theo-agent
+      - name: Setup Python
+        uses: actions/setup-python@v2
+      - name: Install test dependencies
+        run: pip3 install ansible molecule[docker] testinfra ansible-lint yamllint
+      - name: Run molecule tests
+        run: molecule test --all
+        env:
+          MOLECULE_DISTRO: ${{ matrix.distro }}
+          REGISTRY_USER: ${{ matrix.registry }}
