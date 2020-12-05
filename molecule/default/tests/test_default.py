@@ -39,9 +39,7 @@ def test_theo_config_file(host):
 
 def test_sshd_config(host):
     distro = os.getenv('MOLECULE_DISTRO', 'centos7')
-    if distro == 'centos6':
-        expected = get_sshd_config_centos6()
-    elif distro == 'debian8':
+    if distro == 'debian8':
         expected = get_sshd_config_pre_v69()
     elif distro == 'ubuntu1404':
         expected = get_sshd_config_pre_v69()
@@ -68,14 +66,6 @@ def test_sshd_config(host):
         for error in errors:
             print(error)
         assert False
-
-
-def get_sshd_config_centos6():
-    return [
-        b'AuthorizedKeysCommandRunAs theo-agent',
-        b'AuthorizedKeysCommand /usr/sbin/theo-agent',
-        b'AuthorizedKeysFile /var/cache/theo-agent/%u'
-    ]
 
 
 def get_sshd_config_pre_v69():
