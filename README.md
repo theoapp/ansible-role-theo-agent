@@ -1,7 +1,7 @@
 Ansible role: Theo Agent
 =========
 
-[![Build Status](https://travis-ci.org/theoapp/ansible-role-theo-agent.svg?branch=master)](https://travis-ci.org/theoapp/ansible-role-theo-agent)
+![ci](https://github.com/theoapp/ansible-role-theo-agent/workflows/ci/badge.svg)
 
 An Ansible Role that installs [TheoAgent](https://github.com/theoapp/theo-agent)
 on RHEL/CentOS, Debian/Ubuntu.
