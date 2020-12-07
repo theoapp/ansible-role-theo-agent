@@ -46,6 +46,7 @@ jobs:
           - ubuntu2004
           - fedora31
           - fedora32
+          - fedora33
         include:
           - distro: ubuntu1404
             registry: theoapp
