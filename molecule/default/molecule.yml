@@ -19,3 +19,19 @@ provisioner:
   name: ansible
 verifier:
   name: testinfra
+scenario:
+  test_sequence:
+    - dependency
+    - lint
+    - cleanup
+    - destroy
+    - syntax
+    - create
+    - prepare
+    - converge
+    - check
+    - idempotence
+    - side_effect
+    - verify
+    - cleanup
+    - destroy
