@@ -1,5 +1,5 @@
 ---
-theo_agent_version: "0.13.0"
+theo_agent_version: "0.14.0"
 theo_agent_path: /usr/sbin/theo-agent
 theo_agent_user: theo-agent
 theo_agent_config_dir: /etc/theo-agent
