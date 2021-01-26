@@ -50,6 +50,9 @@
       line: "AuthorizedKeysCommand {{ theo_agent_sshd_authorized_keys_command }}"
     - regexp: "^AuthorizedKeysFile"
       line: "AuthorizedKeysFile {{ theo_agent_cache_dir }}/%u"
+    - regexp: "^UseDNS"
+      line: "UseDNS {{ 'yes' if theo_agent_with_use_dns else 'no' }}"
+
   notify: Restart sshd
 
 - name: Add sshd to the list of permissive domain on selinux
