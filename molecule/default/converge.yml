@@ -44,3 +44,6 @@
 
   roles:
     - role: ansible-theo-agent
+    - role: ansible-theo-agent
+      vars:
+        unused_var: "unused"
