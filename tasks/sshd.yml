@@ -6,20 +6,27 @@
       sshd_current_version is version('6.4', '>=')
     msg: With OpenSSH < 6.4 theo_agent_config_path must be /etc/theo-agent/config.yml
 
-- name: Set AuthorizedKeysCommand config snippet 1
-  set_fact:
-    theo_agent_sshd_authorized_keys_command: "{{ theo_agent_sshd_authorized_keys_command }} -config-file {{ theo_agent_config_path }}"
-  when: theo_agent_config_path != "/etc/theo-agent/config.yml" and sshd_current_version is version('6.4', '>')
+- name: Compute AuthorizedKeysCommand value
+  block:
+    - name: Initialize AuthorizedKeysCommand
+      set_fact:
+        theo_agent_sshd_authorized_keys_command_computed: "{{ theo_agent_path }}"
 
-- name: Set AuthorizedKeysCommand config snippet 2
-  set_fact:
-    theo_agent_sshd_authorized_keys_command: "{{ theo_agent_sshd_authorized_keys_command }} -fingerprint %f"
-  when: sshd_current_version is version('6.9', '>=')
+    - name: Set AuthorizedKeysCommand config snippet 1
+      set_fact:
+        theo_agent_sshd_authorized_keys_command_computed: "{{ theo_agent_sshd_authorized_keys_command_computed }} -config-file {{ theo_agent_config_path }}"
+      when: theo_agent_config_path != "/etc/theo-agent/config.yml" and sshd_current_version is version('6.4', '>')
 
-- name: Set AuthorizedKeysCommand config snippet 3
-  set_fact:
-    theo_agent_sshd_authorized_keys_command: "{{ theo_agent_sshd_authorized_keys_command }} %u"
-  when: theo_agent_sshd_authorized_keys_command != theo_agent_path
+    - name: Set AuthorizedKeysCommand config snippet 2
+      set_fact:
+        theo_agent_sshd_authorized_keys_command_computed: "{{ theo_agent_sshd_authorized_keys_command_computed }} -fingerprint %f"
+      when: sshd_current_version is version('6.9', '>=')
+
+    - name: Set AuthorizedKeysCommand config snippet 3
+      set_fact:
+        theo_agent_sshd_authorized_keys_command_computed: "{{ theo_agent_sshd_authorized_keys_command_computed }} %u"
+      when: theo_agent_sshd_authorized_keys_command_computed != theo_agent_path
+  when: theo_agent_sshd_authorized_keys_command|length == 0
 
 - name: Set AuthorizedKeysCommandUser config snippet
   set_fact:
@@ -47,7 +54,9 @@
       line: "PasswordAuthentication no"
     - "{{ sshd_authorized_keys_command_user_options }}"
     - regexp: "^AuthorizedKeysCommand "
-      line: "AuthorizedKeysCommand {{ theo_agent_sshd_authorized_keys_command }}"
+      line: >-
+        AuthorizedKeysCommand {{ theo_agent_sshd_authorized_keys_command if theo_agent_sshd_authorized_keys_command|length != 0
+        else theo_agent_sshd_authorized_keys_command_computed }}
     - regexp: "^AuthorizedKeysFile"
       line: "AuthorizedKeysFile {{ theo_agent_cache_dir }}/%u"
     - regexp: "^UseDNS"
