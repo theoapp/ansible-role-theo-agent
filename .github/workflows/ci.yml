@@ -59,7 +59,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
       - name: Install test dependencies
-        run: pip3 install ansible molecule[docker] testinfra ansible-lint yamllint
+        run: pip3 install ansible molecule[docker] testinfra ansible-lint==4.3.7 yamllint
       - name: Run molecule tests
         run: molecule test --all
         env:
