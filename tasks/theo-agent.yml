@@ -37,9 +37,26 @@
 
 - name: Install theo-agent executable
   get_url:
-    url: https://github.com/theoapp/theo-agent/releases/download/v{{ theo_agent_version }}/theo-agent-{{ ansible_system }}-{{ ansible_architecture }}
+    url: "{{ theo_agent_download_url }}"
     dest: "{{ theo_agent_path }}"
     mode: 0755
+  register: install_theo_agent_executable
+  ignore_errors: yes
+
+- name: Ensure curl is present (on older systems without SNI).
+  package:
+    name: curl
+    state: present
+  when: install_theo_agent_executable is failed
+
+- name: Install theo-agent executable (alternative for older systems without SNI)
+  shell: >
+    curl -sSL -o {{ theo_agent_path }} {{ theo_agent_download_url }} &&
+    chmod 0755 {{ theo_agent_path }}
+  args:
+    creates: "{{ theo_agent_path }}"
+    warn: false
+  when: install_theo_agent_executable is failed
 
 - name: Add theo-agent user
   user:
