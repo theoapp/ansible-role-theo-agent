@@ -1,2 +1,2 @@
 ---
-# vars file for ansible-theo-agent
+theo_agent_download_url: https://github.com/theoapp/theo-agent/releases/download/v{{ theo_agent_version }}/theo-agent-{{ ansible_system }}-{{ ansible_architecture }}
