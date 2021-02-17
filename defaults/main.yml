@@ -8,6 +8,8 @@ theo_agent_cache_dir: /var/cache/theo-agent
 theo_agent_verify_signature: false
 theo_agent_public_key: ""
 theo_agent_public_key_path: "{{ theo_agent_config_dir }}/public.pem"
+# theo_agent_sshd_authorized_keys_command: set this variable if you want a custom AuthorizedKeysCommand
+# NOTE: when theo_agent_sshd_authorized_keys_command is set theo_agent_path is ignored
 theo_agent_sshd_authorized_keys_command: ""
 theo_agent_with_use_dns: false
 theo_agent_hostname_prefix: ""
