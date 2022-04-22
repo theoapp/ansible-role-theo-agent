@@ -23,7 +23,7 @@ jobs:
         with:
           path: ansible-theo-agent
       - name: Super-Linter
-        uses: github/super-linter@v3
+        uses: github/super-linter@v4
         env:
           VALIDATE_ANSIBLE: true
           ANSIBLE_DIRECTORY: /
