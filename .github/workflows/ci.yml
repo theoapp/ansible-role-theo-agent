@@ -39,6 +39,7 @@ jobs:
         distro:
           - centos7
           - centos8
+          - rockylinux8
           - debian9
           - debian10
           - ubuntu1604
