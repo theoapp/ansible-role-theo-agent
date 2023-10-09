@@ -19,11 +19,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: ansible-theo-agent
       - name: Super-Linter
-        uses: github/super-linter@v3
+        uses: github/super-linter@v4
         env:
           VALIDATE_ANSIBLE: true
           ANSIBLE_DIRECTORY: /
@@ -39,6 +39,7 @@ jobs:
         distro:
           - centos7
           - centos8
+          - rockylinux8
           - debian9
           - debian10
           - ubuntu1604
@@ -53,13 +54,15 @@ jobs:
 
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: ansible-theo-agent
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.x"
       - name: Install test dependencies
-        run: pip3 install ansible molecule[docker] testinfra ansible-lint==4.3.7 yamllint
+        run: pip3 install ansible molecule[docker] testinfra
       - name: Run molecule tests
         run: molecule test --all
         env:
