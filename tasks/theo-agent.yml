@@ -70,23 +70,25 @@
     path: "{{ theo_agent_cache_dir }}"
     state: directory
     owner: "{{ theo_agent_user }}"
-    mode: 0755
+    mode: 0700
 
 - name: Create config directory
   file:
     path: "{{ theo_agent_config_dir }}"
     state: directory
-    mode: 0755
+    mode: 0700
 
 - name: Create config file
   template:
     src: config.yml.j2
     dest: "{{ theo_agent_config_path }}"
-    mode: 0644
+    owner: "{{ theo_agent_user }}"
+    mode: 0600
 
 - name: Create public key file
   copy:
     dest: "{{ theo_agent_public_key_path }}"
-    mode: 0644
+    owner: "{{ theo_agent_user }}"
+    mode: 0600
     content: "{{ theo_agent_public_key }}"
   when: theo_agent_verify_signature|bool
