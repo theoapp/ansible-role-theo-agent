@@ -20,7 +20,7 @@
     - name: Set AuthorizedKeysCommand config snippet 2
       set_fact:
         theo_agent_sshd_authorized_keys_command_computed: "{{ theo_agent_sshd_authorized_keys_command_computed }} -fingerprint %f"
-      when: sshd_current_version is version('6.9', '>=') and (sshd_current_version is version('9.4', '<') or theo_agent_version is version('0.16', '<')
+      when: sshd_current_version is version('6.9', '>=') and ( sshd_current_version is version('9.4', '<') or theo_agent_version is version('0.16', '<') )
 
     - name: Set AuthorizedKeysCommand config snippet 3
       set_fact:
