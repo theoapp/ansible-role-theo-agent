@@ -1,7 +1,10 @@
 ---
 - name: Include OS-specific variables
-  include_vars: "{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
 
-- include_tasks: validation.yml
-- include_tasks: theo-agent.yml
-- include_tasks: sshd.yml
+- name: Validate environment
+  ansible.builtin.include_tasks: validation.yml
+- name: Install theo-agent
+  ansible.builtin.include_tasks: theo-agent.yml
+- name: Configure sshd to use theo-agent
+  ansible.builtin.include_tasks: sshd.yml
