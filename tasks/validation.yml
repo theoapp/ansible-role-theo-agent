@@ -2,7 +2,7 @@
 - name: Get OpenSSH version
   shell: |
     set -o pipefail
-    sshd -v 2>&1 | grep '^OpenSSH' | awk '{ print $1 }' | sed 's/OpenSSH_//; s/p/./; s/,//; s/ //g'
+    sshd -V 2>&1 | grep '^OpenSSH' | awk '{ print $1 }' | sed 's/OpenSSH_//; s/p/./; s/,//; s/ //g'
   args:
     executable: /bin/bash
   register: sshd_current_version_cmd
