@@ -1,6 +1,6 @@
 ---
 - name: Validate settings
-  assert:
+  ansible.builtin.assert:
     that: |
       (theo_agent_config_path == "/etc/theo-agent/config.yml" and sshd_current_version is version('6.4', '<')) or
       sshd_current_version is version('6.4', '>=')
@@ -9,46 +9,46 @@
 - name: Compute AuthorizedKeysCommand value
   block:
     - name: Initialize AuthorizedKeysCommand
-      set_fact:
+      ansible.builtin.set_fact:
         theo_agent_sshd_authorized_keys_command_computed: "{{ theo_agent_path }}"
 
     - name: Set AuthorizedKeysCommand config snippet 1
-      set_fact:
+      ansible.builtin.set_fact:
         theo_agent_sshd_authorized_keys_command_computed: "{{ theo_agent_sshd_authorized_keys_command_computed }} -config-file {{ theo_agent_config_path }}"
       when: theo_agent_config_path != "/etc/theo-agent/config.yml" and sshd_current_version is version('6.4', '>')
 
     - name: Set AuthorizedKeysCommand config snippet 2
-      set_fact:
+      ansible.builtin.set_fact:
         theo_agent_sshd_authorized_keys_command_computed: "{{ theo_agent_sshd_authorized_keys_command_computed }} -fingerprint %f"
       when: sshd_current_version is version('6.9', '>=') and ( sshd_current_version is version('9.4', '<') or theo_agent_version is version('0.16', '<') )
 
     - name: Set AuthorizedKeysCommand config snippet 3
-      set_fact:
+      ansible.builtin.set_fact:
         theo_agent_sshd_authorized_keys_command_computed: "{{ theo_agent_sshd_authorized_keys_command_computed }} -connection %C -fingerprint %f"
       when: sshd_current_version is version('9.4', '>=') and theo_agent_version is version('0.16', '>=')
 
     - name: Set AuthorizedKeysCommand config snippet 4
-      set_fact:
+      ansible.builtin.set_fact:
         theo_agent_sshd_authorized_keys_command_computed: "{{ theo_agent_sshd_authorized_keys_command_computed }} %u"
       when: theo_agent_sshd_authorized_keys_command_computed != theo_agent_path
   when: theo_agent_sshd_authorized_keys_command|length == 0
 
 - name: Set AuthorizedKeysCommandUser config snippet
-  set_fact:
+  ansible.builtin.set_fact:
     sshd_authorized_keys_command_user_options:
       - regexp: "^AuthorizedKeysCommandUser"
         line: "AuthorizedKeysCommandUser {{ theo_agent_user }}"
   when: not ( ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 6 )
 
 - name: Set AuthorizedKeysCommandRunAs config snippet
-  set_fact:
+  ansible.builtin.set_fact:
     sshd_authorized_keys_command_user_options:
       - regexp: "^AuthorizedKeysCommandRunAs"
         line: "AuthorizedKeysCommandRunAs {{ theo_agent_user }}"
   when: ( ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 6 )
 
 - name: Update sshd configuration options
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
@@ -89,7 +89,7 @@
   when: sshd_current_version is version('8.1', '>=')
 
 - name: Add sshd to the list of permissive domain on selinux
-  selinux_permissive:
+  ansible.posix.selinux_permissive:
     name: sshd_t
     permissive: true
   when: ansible_selinux is defined and ansible_selinux and ansible_selinux.status == 'enabled'

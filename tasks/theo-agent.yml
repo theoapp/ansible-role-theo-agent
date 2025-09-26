@@ -1,6 +1,6 @@
 ---
 - name: Check variables consistency
-  assert:
+  ansible.builtin.assert:
     that: |
       (
         (
@@ -12,23 +12,23 @@
       )
 
 - name: Check current theo-agent version
-  command: theo-agent --version | grep '^Version:' | awk '{ print $2 }'
+  ansible.builtin.command: theo-agent --version | grep '^Version:' | awk '{ print $2 }'
   register: theo_agent_current_version
   changed_when: false
   failed_when: false
 
 - name: Set public key path for config
-  set_fact:
+  ansible.builtin.set_fact:
     theo_agent_config_public_key_path: "public_key: {{ theo_agent_public_key_path }}"
   when: theo_agent_verify_signature|bool
 
 - name: Set public key path for config
-  set_fact:
+  ansible.builtin.set_fact:
     theo_agent_config_public_key_path: ""
   when: not theo_agent_verify_signature|bool
 
 - name: Delete existing theo-agent version if different
-  file:
+  ansible.builtin.file:
     path: "{{ theo_agent_path }}"
     state: absent
   when: >
@@ -36,7 +36,7 @@
     and theo_agent_version not in theo_agent_current_version.stdout
 
 - name: Install theo-agent executable
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ theo_agent_download_url }}"
     dest: "{{ theo_agent_path }}"
     mode: 0755
@@ -44,13 +44,13 @@
   ignore_errors: yes
 
 - name: Ensure curl is present (on older systems without SNI).
-  package:
+  ansible.builtin.package:
     name: curl
     state: present
   when: install_theo_agent_executable is failed
 
 - name: Install theo-agent executable (alternative for older systems without SNI)
-  shell: >
+  ansible.builtin.shell: >
     curl -sSL -o {{ theo_agent_path }} {{ theo_agent_download_url }} &&
     chmod 0755 {{ theo_agent_path }}
   args:
@@ -59,35 +59,35 @@
   when: install_theo_agent_executable is failed
 
 - name: Add theo-agent user
-  user:
+  ansible.builtin.user:
     name: "{{ theo_agent_user }}"
     comment: "Theo Agent"
     shell: /bin/false
     system: yes
 
 - name: Create cache directory
-  file:
+  ansible.builtin.file:
     path: "{{ theo_agent_cache_dir }}"
     state: directory
     owner: "{{ theo_agent_user }}"
     mode: 0700
 
 - name: Create config directory
-  file:
+  ansible.builtin.file:
     path: "{{ theo_agent_config_dir }}"
     state: directory
     mode: 0700
     owner: "{{ theo_agent_user }}"
 
 - name: Create config file
-  template:
+  ansible.builtin.template:
     src: config.yml.j2
     dest: "{{ theo_agent_config_path }}"
     owner: "{{ theo_agent_user }}"
     mode: 0600
 
 - name: Create public key file
-  copy:
+  ansible.builtin.copy:
     dest: "{{ theo_agent_public_key_path }}"
     owner: "{{ theo_agent_user }}"
     mode: 0600
