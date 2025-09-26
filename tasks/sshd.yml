@@ -66,8 +66,27 @@
       line: "AuthorizedKeysFile {{ theo_agent_cache_dir }}/%u"
     - regexp: "^UseDNS"
       line: "UseDNS {{ 'yes' if theo_agent_with_use_dns else 'no' }}"
-
   notify: Restart sshd
+  when: sshd_current_version is version('8.1', '<')
+
+- name: Create sshd configuration options to include
+  ansible.builtin.copy:
+    dest: /etc/ssh/sshd_config.d/01-theo-agent.conf
+    content: |
+      # This file is managed by Ansible, any manual changes will be lost.
+      PasswordAuthentication no
+      {{ 'AuthorizedKeysCommandUser ' + theo_agent_user if not ( ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 6 ) else '' }}
+      {{ 'AuthorizedKeysCommandRunAs ' + theo_agent_user if ( ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 6 ) else '' }}
+      AuthorizedKeysCommand {{ theo_agent_sshd_authorized_keys_command if theo_agent_sshd_authorized_keys_command|length != 0
+      else theo_agent_sshd_authorized_keys_command_computed }}
+      AuthorizedKeysFile {{ theo_agent_cache_dir }}/%u
+      UseDNS {{ 'yes' if theo_agent_with_use_dns else 'no' }}
+    mode: '0644'
+    owner: root
+    group: root
+    validate: "/usr/sbin/sshd -T -f %s"
+  notify: Restart sshd
+  when: sshd_current_version is version('8.1', '>=')
 
 - name: Add sshd to the list of permissive domain on selinux
   selinux_permissive:
