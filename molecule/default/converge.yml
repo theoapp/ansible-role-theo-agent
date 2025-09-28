@@ -14,7 +14,7 @@
       when: ansible_service_mgr == 'systemd'
       changed_when: false
       failed_when: systemctl_status.rc > 1
-      check_mode: no
+      check_mode: false
 
     - name: Update apt cache
       ansible.builtin.apt:

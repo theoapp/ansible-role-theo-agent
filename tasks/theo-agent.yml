@@ -39,44 +39,46 @@
   ansible.builtin.get_url:
     url: "{{ theo_agent_download_url }}"
     dest: "{{ theo_agent_path }}"
-    mode: 0755
+    mode: "755"
   register: install_theo_agent_executable
-  ignore_errors: yes
-
-- name: Ensure curl is present (on older systems without SNI).
-  ansible.builtin.package:
-    name: curl
-    state: present
-  when: install_theo_agent_executable is failed
+  ignore_errors: true
 
 - name: Install theo-agent executable (alternative for older systems without SNI)
-  ansible.builtin.shell: >
-    curl -sSL -o {{ theo_agent_path }} {{ theo_agent_download_url }} &&
-    chmod 0755 {{ theo_agent_path }}
-  args:
-    creates: "{{ theo_agent_path }}"
-    warn: false
   when: install_theo_agent_executable is failed
+  block:
+    - name: Ensure curl is present
+      ansible.builtin.package:
+        name: curl
+        state: present
+
+    - name: Download theo-agent executable (alternative for older systems without SNI)  # noqa command-instead-of-module
+      ansible.builtin.shell: >
+        curl -sSL -o {{ theo_agent_path }} {{ theo_agent_download_url }} &&
+        chmod 755 {{ theo_agent_path }}
+      args:
+        creates: "{{ theo_agent_path }}"
+        warn: false
+      when: install_theo_agent_executable is failed
 
 - name: Add theo-agent user
   ansible.builtin.user:
     name: "{{ theo_agent_user }}"
     comment: "Theo Agent"
     shell: /bin/false
-    system: yes
+    system: true
 
 - name: Create cache directory
   ansible.builtin.file:
     path: "{{ theo_agent_cache_dir }}"
     state: directory
     owner: "{{ theo_agent_user }}"
-    mode: 0700
+    mode: "700"
 
 - name: Create config directory
   ansible.builtin.file:
     path: "{{ theo_agent_config_dir }}"
     state: directory
-    mode: 0700
+    mode: "700"
     owner: "{{ theo_agent_user }}"
 
 - name: Create config file
@@ -84,12 +86,12 @@
     src: config.yml.j2
     dest: "{{ theo_agent_config_path }}"
     owner: "{{ theo_agent_user }}"
-    mode: 0600
+    mode: "600"
 
 - name: Create public key file
   ansible.builtin.copy:
     dest: "{{ theo_agent_public_key_path }}"
     owner: "{{ theo_agent_user }}"
-    mode: 0600
+    mode: "600"
     content: "{{ theo_agent_public_key }}"
   when: theo_agent_verify_signature|bool
