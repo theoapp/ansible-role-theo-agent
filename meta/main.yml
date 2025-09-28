@@ -45,24 +45,15 @@ galaxy_info:
   #   - 7
   #   - 99.99
   platforms:
+    - name: Fedora
+      versions:
+        - all
     - name: Debian
       versions:
-        - stretch
-        - buster
+        - all
     - name: Ubuntu
       versions:
-        - trusty
-        - xenial
-        - bionic
-        - focal
-    - name: EL
-      versions:
-        - 7
-        - 8
-    - name: fedora
-      versions:
-        - 31
-        - 32
+        - all
 
   # List tags for your role here, one per line. A tag is a keyword that describes
   # and categorizes the role. Users find roles by searching for tags. Be sure to
