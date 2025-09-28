@@ -8,7 +8,7 @@
   register: sshd_current_version_cmd
   changed_when: false
   failed_when: false
-  check_mode: no
+  check_mode: false
 
 - name: Set sshd_current_version
   ansible.builtin.set_fact:

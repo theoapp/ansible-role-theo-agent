@@ -7,6 +7,7 @@
     msg: With OpenSSH < 6.4 theo_agent_config_path must be /etc/theo-agent/config.yml
 
 - name: Compute AuthorizedKeysCommand value
+  when: theo_agent_sshd_authorized_keys_command|length == 0
   block:
     - name: Initialize AuthorizedKeysCommand
       ansible.builtin.set_fact:
@@ -31,7 +32,6 @@
       ansible.builtin.set_fact:
         theo_agent_sshd_authorized_keys_command_computed: "{{ theo_agent_sshd_authorized_keys_command_computed }} %u"
       when: theo_agent_sshd_authorized_keys_command_computed != theo_agent_path
-  when: theo_agent_sshd_authorized_keys_command|length == 0
 
 - name: Set AuthorizedKeysCommandUser config snippet
   ansible.builtin.set_fact:
@@ -47,20 +47,25 @@
         line: "AuthorizedKeysCommandRunAs {{ theo_agent_user }}"
   when: ( ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 6 )
 
+- name: Ensure SSH daemon is running.
+  service:
+    name: "{{ 'ssh' if ansible_os_family == 'Debian' else 'sshd' }}"
+    state: started
+
 - name: Update sshd configuration options
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
     state: present
-    validate: "/usr/sbin/sshd -T -f %s"
+    validate: 'sshd -T -f %s'
   with_items:
     - regexp: "^PasswordAuthentication"
       line: "PasswordAuthentication no"
     - "{{ sshd_authorized_keys_command_user_options }}"
     - regexp: "^AuthorizedKeysCommand "
-      line: >-
-        AuthorizedKeysCommand {{ theo_agent_sshd_authorized_keys_command if theo_agent_sshd_authorized_keys_command|length != 0
+      line:
+        AuthorizedKeysCommand {{ theo_agent_sshd_authorized_keys_command if theo_agent_sshd_authorized_keys_command | length != 0
         else theo_agent_sshd_authorized_keys_command_computed }}
     - regexp: "^AuthorizedKeysFile"
       line: "AuthorizedKeysFile {{ theo_agent_cache_dir }}/%u"
@@ -75,21 +80,21 @@
     content: |
       # This file is managed by Ansible, any manual changes will be lost.
       PasswordAuthentication no
-      {{ 'AuthorizedKeysCommandUser ' + theo_agent_user if not ( ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 6 ) else '' }}
-      {{ 'AuthorizedKeysCommandRunAs ' + theo_agent_user if ( ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 6 ) else '' }}
-      AuthorizedKeysCommand {{ theo_agent_sshd_authorized_keys_command if theo_agent_sshd_authorized_keys_command|length != 0
+      {{ 'AuthorizedKeysCommandUser ' + theo_agent_user if not (ansible_os_family == "RedHat" and ansible_distribution_major_version | int == 6) else '' }}
+      {{ 'AuthorizedKeysCommandRunAs ' + theo_agent_user if (ansible_os_family == "RedHat" and ansible_distribution_major_version | int == 6) else '' }}
+      AuthorizedKeysCommand {{ theo_agent_sshd_authorized_keys_command if theo_agent_sshd_authorized_keys_command | length != 0
       else theo_agent_sshd_authorized_keys_command_computed }}
       AuthorizedKeysFile {{ theo_agent_cache_dir }}/%u
       UseDNS {{ 'yes' if theo_agent_with_use_dns else 'no' }}
     mode: '0644'
     owner: root
     group: root
-    validate: "/usr/sbin/sshd -T -f %s"
+    validate: 'sshd -T -f %s'
   notify: Restart sshd
   when: sshd_current_version is version('8.1', '>=')
 
 - name: Add sshd to the list of permissive domain on selinux
-  ansible.posix.selinux_permissive:
+  community.general.selinux_permissive:
     name: sshd_t
     permissive: true
   when: ansible_selinux is defined and ansible_selinux and ansible_selinux.status == 'enabled'
