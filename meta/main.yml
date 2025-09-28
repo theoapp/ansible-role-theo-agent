@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   role_name: theo_agent
-  author: gizero
+  author: theoapp
   description: Theo agent
 
   # If the issue tracker for your role is not on github, uncomment the
