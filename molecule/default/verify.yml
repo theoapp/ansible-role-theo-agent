@@ -1,0 +1,60 @@
+---
+- name: Verify theo-agent installation
+  hosts: all
+  tasks:
+    - name: Verify theo-agent binary is available
+      ansible.builtin.command: theo-agent -version
+      register: theo_agent_version_result
+      changed_when: false
+      failed_when: theo_agent_version_result.rc != 0
+
+    - name: Verify theo-agent config file is present
+      ansible.builtin.stat:
+        path: /etc/theo-agent/config.yml
+      register: theo_agent_config_stat
+      failed_when: not theo_agent_config_stat.stat.exists
+      changed_when: false
+
+    - name: Debug os family and version
+      ansible.builtin.debug:
+        msg: "OS Family: {{ ansible_os_family }}, Distribution: {{ ansible_distribution }}, Version: {{ ansible_distribution_version }}"
+      changed_when: false
+
+    - name: Verify sshd config (ubuntu 20.04+)
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version is version('20.04', '>=')
+      block:
+        - name: Check that sshd config snippet exists
+          ansible.builtin.stat:
+            path: /etc/ssh/sshd_config.d/01-theo-agent.conf
+          register: sshd_config_snippet_stat
+          failed_when: not sshd_config_snippet_stat.stat.exists
+          changed_when: false
+
+        - name: Check that sshd_config is not touched
+          ansible.builtin.command: grep -E '^(AuthorizedKeysCommand|AuthorizedKeysCommandUser)' /etc/ssh/sshd_config
+          register: sshd_config_check
+          failed_when: sshd_config_check.rc == 0
+          changed_when: false
+
+        - name: Check that sshd config snippet is configured correctly
+          when: ansible_distribution_version is version('24.04', '>=')
+          ansible.builtin.command: grep -E '^AuthorizedKeysCommand .* -connection ' /etc/ssh/sshd_config.d/01-theo-agent.conf
+          register: sshd_config_connection_check
+          failed_when: sshd_config_connection_check.rc != 0
+          changed_when: false
+
+        - name: Check that sshd config snippet is configured correctly
+          when: ansible_distribution_version is version('24.04', '<')
+          ansible.builtin.command: grep -E '^AuthorizedKeysCommand .* -connection ' /etc/ssh/sshd_config
+          register: sshd_config_connection_check
+          failed_when: sshd_config_connection_check.rc == 0
+          changed_when: false
+
+    - name: Verify sshd config (ubuntu < 20.04)
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version is version('20.04', '<')
+      block:
+        - name: Check that sshd_config is configured correctly
+          ansible.builtin.command: grep '^AuthorizedKeysCommand /usr/sbin/theo-agent' /etc/ssh/sshd_config
+          register: sshd_config_check
+          failed_when: sshd_config_check.rc != 0
+          changed_when: false

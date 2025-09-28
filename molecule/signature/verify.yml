@@ -1,0 +1,36 @@
+---
+- name: Verify theo-agent installation
+  hosts: all
+  tasks:
+    - name: Verify theo-agent binary is available
+      ansible.builtin.command: theo-agent -version
+      register: theo_agent_version_result
+      changed_when: false
+      failed_when: theo_agent_version_result.rc != 0
+
+    - name: Verify theo-agent config file is present
+      ansible.builtin.stat:
+        path: /etc/theo-agent/config.yml
+      register: theo_agent_config_stat
+      failed_when: not theo_agent_config_stat.stat.exists
+      changed_when: false
+
+    - name: Verify theo-agent public.pem file is present
+      ansible.builtin.stat:
+        path: /etc/theo-agent/public.pem
+      register: theo_agent_cert_stat
+      failed_when: not theo_agent_cert_stat.stat.exists
+      changed_when: false
+
+    - name: Check theo-agent config file content
+      ansible.builtin.copy:
+        dest: /etc/theo-agent/config.yml
+        content: |
+          url: https://theo.example.com
+          token: zdOPNza4jjtceH5F2rU0iOkIJ2xlV4hGUauKT4cNe8HAp+AMnzYEzSc0EIBGM+MJuqL7gLd6bwIP
+          cachedir: /var/cache/theo-agent
+          verify: True
+          public_key: /etc/theo-agent/public.pem
+          hostname-prefix: test-
+      register: theo_agent_config
+      failed_when: theo_agent_config is not defined or theo_agent_config.changed
