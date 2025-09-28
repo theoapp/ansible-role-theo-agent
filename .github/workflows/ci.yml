@@ -11,7 +11,7 @@ on:
 
 defaults:
   run:
-    working-directory: ansible-theo-agent
+    working-directory: theoapp.theo_agent
 
 jobs:
   lint:
@@ -19,16 +19,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
-          path: ansible-theo-agent
-      - name: Super-Linter
-        uses: github/super-linter@v3
-        env:
-          VALIDATE_ANSIBLE: true
-          ANSIBLE_DIRECTORY: /
-          VALIDATE_YAML: true
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          path: theoapp.theo_agent
+
+      - name: Set up Python 3.
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install test dependencies.
+        run: pip3 install yamllint
+
+      - name: Lint code.
+        run: |
+          yamllint .
 
   molecule:
     name: Molecule
@@ -37,31 +42,34 @@ jobs:
       fail-fast: false
       matrix:
         distro:
-          - centos7
-          - centos8
-          - debian9
-          - debian10
-          - ubuntu1604
-          - ubuntu1804
+          - rockylinux9
+          - rockylinux10
+          - debian11
+          - debian12
+          - debian13
           - ubuntu2004
-          - fedora31
-          - fedora32
-          - fedora33
-        include:
-          - distro: ubuntu1404
-            registry: theoapp
+          - ubuntu2204
+          - ubuntu2404
+          - fedora41
+          - fedora42
 
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
-          path: ansible-theo-agent
-      - name: Setup Python
-        uses: actions/setup-python@v2
-      - name: Install test dependencies
-        run: pip3 install ansible molecule[docker] testinfra ansible-lint==4.3.7 yamllint
-      - name: Run molecule tests
-        run: molecule test --all
+          path: theoapp.theo_agent
+
+      - name: Set up Python 3.
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install test dependencies.
+        run: pip3 install ansible molecule molecule-plugins[docker] docker
+
+      - name: Run Molecule tests.
+        run: molecule test
         env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
           MOLECULE_DISTRO: ${{ matrix.distro }}
-          REGISTRY_USER: ${{ matrix.registry }}
