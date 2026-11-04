@@ -48,7 +48,7 @@
   when: ( ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 6 )
 
 - name: Ensure SSH daemon is running.
-  service:
+  ansible.builtin.service:
     name: "{{ 'ssh' if ansible_os_family == 'Debian' else 'sshd' }}"
     state: started
 
