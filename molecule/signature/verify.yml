@@ -25,6 +25,7 @@
     - name: Check theo-agent config file content
       ansible.builtin.copy:
         dest: /etc/theo-agent/config.yml
+        mode: "600"
         content: |
           url: https://theo.example.com
           token: zdOPNza4jjtceH5F2rU0iOkIJ2xlV4hGUauKT4cNe8HAp+AMnzYEzSc0EIBGM+MJuqL7gLd6bwIP
