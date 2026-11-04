@@ -99,4 +99,4 @@
   community.general.selinux_permissive:
     name: sshd_t
     permissive: true
-  when: ansible_facts['selinux'] is defined and ansible_facts['selinux'] and ansible_facts['selinux']['status'] == 'enabled'
+  when: ansible_facts['selinux']['status'] | default('') == 'enabled'
