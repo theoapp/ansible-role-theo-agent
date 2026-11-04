@@ -33,5 +33,6 @@
           verify: True
           public_key: /etc/theo-agent/public.pem
           hostname-prefix: test-
+      check_mode: true
       register: theo_agent_config
       failed_when: theo_agent_config is not defined or theo_agent_config.changed
