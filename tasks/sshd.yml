@@ -38,18 +38,18 @@
     sshd_authorized_keys_command_user_options:
       - regexp: "^AuthorizedKeysCommandUser"
         line: "AuthorizedKeysCommandUser {{ theo_agent_user }}"
-  when: not ( ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 6 )
+  when: not ( ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version']|int == 6 )
 
 - name: Set AuthorizedKeysCommandRunAs config snippet
   ansible.builtin.set_fact:
     sshd_authorized_keys_command_user_options:
       - regexp: "^AuthorizedKeysCommandRunAs"
         line: "AuthorizedKeysCommandRunAs {{ theo_agent_user }}"
-  when: ( ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 6 )
+  when: ( ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version']|int == 6 )
 
 - name: Ensure SSH daemon is running.
   ansible.builtin.service:
-    name: "{{ 'ssh' if ansible_os_family == 'Debian' else 'sshd' }}"
+    name: "{{ 'ssh' if ansible_facts['os_family'] == 'Debian' else 'sshd' }}"
     state: started
 
 - name: Update sshd configuration options
@@ -80,8 +80,10 @@
     content: |
       # This file is managed by Ansible, any manual changes will be lost.
       PasswordAuthentication no
-      {{ 'AuthorizedKeysCommandUser ' + theo_agent_user if not (ansible_os_family == "RedHat" and ansible_distribution_major_version | int == 6) else '' }}
-      {{ 'AuthorizedKeysCommandRunAs ' + theo_agent_user if (ansible_os_family == "RedHat" and ansible_distribution_major_version | int == 6) else '' }}
+      {{ 'AuthorizedKeysCommandUser ' + theo_agent_user
+      if not (ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] | int == 6) else '' }}
+      {{ 'AuthorizedKeysCommandRunAs ' + theo_agent_user
+      if (ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] | int == 6) else '' }}
       AuthorizedKeysCommand {{ theo_agent_sshd_authorized_keys_command if theo_agent_sshd_authorized_keys_command | length != 0
       else theo_agent_sshd_authorized_keys_command_computed }}
       AuthorizedKeysFile {{ theo_agent_cache_dir }}/%u
@@ -97,4 +99,4 @@
   community.general.selinux_permissive:
     name: sshd_t
     permissive: true
-  when: ansible_selinux is defined and ansible_selinux and ansible_selinux.status == 'enabled'
+  when: ansible_facts['selinux'] is defined and ansible_facts['selinux'] and ansible_facts['selinux']['status'] == 'enabled'

@@ -11,7 +11,7 @@
         'degraded' in systemctl_status.stdout
       retries: 30
       delay: 5
-      when: ansible_service_mgr == 'systemd'
+      when: ansible_facts['service_mgr'] == 'systemd'
       changed_when: false
       failed_when: systemctl_status.rc > 1
       check_mode: false
@@ -20,7 +20,7 @@
       ansible.builtin.apt:
         update_cache: yes
         cache_valid_time: 600
-      when: ansible_os_family == 'Debian'
+      when: ansible_facts['os_family'] == 'Debian'
 
     - name: Ensure sshd is installed
       ansible.builtin.package:
@@ -34,7 +34,7 @@
         content: ""
         force: false
         mode: "0644"
-      when: ansible_distribution == 'Debian'
+      when: ansible_facts['distribution'] == 'Debian'
 
   roles:
     - role: theoapp.theo_agent

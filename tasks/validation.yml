@@ -22,8 +22,8 @@
   ansible.builtin.assert:
     that: |
       (sshd_current_version is version('6.2', '>=') or
-        ( ( ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' )
-          and ansible_distribution_version is version('6', '>=')
+        ( ( ansible_facts['distribution'] == 'CentOS' or ansible_facts['distribution'] == 'Red Hat Enterprise Linux' )
+          and ansible_facts['distribution_version'] is version('6', '>=')
         )
       )
     msg: OpenSSH version {{ sshd_current_version }} does not support AuthorizedKeysCommand
