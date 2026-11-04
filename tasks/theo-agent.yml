@@ -57,7 +57,6 @@
         chmod 755 {{ theo_agent_path }}
       args:
         creates: "{{ theo_agent_path }}"
-        warn: false
       when: install_theo_agent_executable is failed
 
 - name: Add theo-agent user
