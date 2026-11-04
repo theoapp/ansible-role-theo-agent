@@ -11,6 +11,11 @@ Requirements
 
 This role assumes SSH server is installed on the target host.
 
+The role uses the `community.general` collection, which is included in the
+`ansible` package. If you only have `ansible-core`, install it with:
+
+    ansible-galaxy collection install community.general
+
 Role Variables
 --------------
 
