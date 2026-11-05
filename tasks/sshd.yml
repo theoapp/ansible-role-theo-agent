@@ -52,6 +52,20 @@
     name: "{{ 'ssh' if ansible_facts['os_family'] == 'Debian' else 'sshd' }}"
     state: started
 
+- name: Set PasswordAuthentication on config snippet
+  set_fact:
+    sshd_password_authentication_options:
+      - regexp: "^PasswordAuthentication"
+        line: "PasswordAuthentication yes"
+  when: theo_agent_with_password_authentication|bool
+
+- name: Set PasswordAuthentication off config snippet
+  set_fact:
+    sshd_password_authentication_options:
+      - regexp: "^PasswordAuthentication"
+        line: "PasswordAuthentication no"
+  when: not theo_agent_with_password_authentication|bool
+
 - name: Update sshd configuration options
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
@@ -60,8 +74,7 @@
     state: present
     validate: 'sshd -T -f %s'
   with_items:
-    - regexp: "^PasswordAuthentication"
-      line: "PasswordAuthentication no"
+    - "{{ sshd_password_authentication_options }}"
     - "{{ sshd_authorized_keys_command_user_options }}"
     - regexp: "^AuthorizedKeysCommand "
       line:
